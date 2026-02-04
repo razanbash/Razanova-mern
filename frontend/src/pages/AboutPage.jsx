@@ -1,158 +1,198 @@
 import React from "react";
-import { Box, Paper, Typography, Grid, Stack, Divider } from "@mui/material";
-import SpaIcon from "@mui/icons-material/Spa";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { useNavigate } from "react-router-dom";
+import { Box, Paper, Typography, Stack, Divider, Button } from "@mui/material";
+
+import Spa from "@mui/icons-material/Spa";
+import MailOutline from "@mui/icons-material/MailOutline";
+import Instagram from "@mui/icons-material/Instagram";
+import PhoneIphone from "@mui/icons-material/PhoneIphone";
+import AutoAwesome from "@mui/icons-material/AutoAwesome";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import WaterDrop from "@mui/icons-material/WaterDrop";
 
 export default function AboutPage() {
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
-        minHeight: "calc(100vh - 64px)",
-        display: "grid",
-        placeItems: "center",
+        minHeight: "100vh",
+        bgcolor: "#f3eadf",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         p: 2,
-        background: "linear-gradient(135deg, #f7efe7, #ead7c4)",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <Paper
-        elevation={12}
+      <Spa
         sx={{
-          width: "min(1000px, 96vw)",
-          height:800,
-          borderRadius: 5,
+          position: "absolute",
+          top: "5%",
+          left: "5%",
+          fontSize: 100,
+          color: "#dcd0c0",
+          opacity: 0.6,
+        }}
+      />
+      <AutoAwesome
+        sx={{
+          position: "absolute",
+          top: "15%",
+          right: "8%",
+          fontSize: 70,
+          color: "#dcd0c0",
+          opacity: 0.6,
+        }}
+      />
+      <WaterDrop
+        sx={{
+          position: "absolute",
+          bottom: "10%",
+          left: "10%",
+          fontSize: 90,
+          color: "#dcd0c0",
+          opacity: 0.5,
+        }}
+      />
+      <FavoriteBorder
+        sx={{
+          position: "absolute",
+          bottom: "12%",
+          right: "12%",
+          fontSize: 80,
+          color: "#dcd0c0",
+          opacity: 0.5,
+        }}
+      />
+      <Spa
+        sx={{
+          position: "absolute",
+          top: "45%",
+          left: "-2%",
+          fontSize: 60,
+          color: "#dcd0c0",
+          opacity: 0.4,
+        }}
+      />
+      <AutoAwesome
+        sx={{
+          position: "absolute",
+          top: "40%",
+          right: "1%",
+          fontSize: 70,
+          color: "#dcd0c0",
+          opacity: 0.4,
+        }}
+      />
+      <WaterDrop
+        sx={{
+          position: "absolute",
+          top: "10%",
+          left: "45%",
+          fontSize: 50,
+          color: "#dcd0c0",
+          opacity: 0.4,
+        }}
+      />
+      <FavoriteBorder
+        sx={{
+          position: "absolute",
+          bottom: "5%",
+          left: "45%",
+          fontSize: 60,
+          color: "#dcd0c0",
+          opacity: 0.4,
+        }}
+      />
+
+      <Paper
+        elevation={20}
+        sx={{
+          width: "min(500px, 100%)",
+          borderRadius: 4,
           overflow: "hidden",
-          background: "rgba(255,255,255,0.88)",
-          boxShadow: "0 24px 70px rgba(111,78,55,0.22)",
-          position: "relative",
+          bgcolor: "#fff",
+          zIndex: 2,
+          border: "1px solid #dcd7d1",
         }}
       >
-        <SpaIcon
-          sx={{
-            position: "absolute",
-            top: 22,
-            right: 24,
-            fontSize: 52,
-            color: "rgba(138,90,68,0.18)",
-          }}
-        />
-        <AutoAwesomeIcon
-          sx={{
-            position: "absolute",
-            bottom: 18,
-            left: 22,
-            fontSize: 46,
-            color: "rgba(138,90,68,0.16)",
-          }}
-        />
-
         <Box
-          sx={{
-            p: { xs: 3, md: 4 },
-            background: "linear-gradient(135deg, #7a553c, #a57a56)",
-            color: "white",
-          }}
+          sx={{ p: 4, bgcolor: "#5a3e2b", color: "#fff", textAlign: "center" }}
         >
-          <Stack direction="row" spacing={1} alignItems="center">
-            <FavoriteBorderIcon />
-            <Typography variant="h4" sx={{ fontWeight: 1000 }}>
-              About Us
-            </Typography>
-          </Stack>
-
-          <Typography sx={{ opacity: 0.9, mt: 0.5 }}>
-            Simple information about Razanova + how to contact us
+          <Spa sx={{ fontSize: 40, mb: 1 }} />
+          <Typography variant="h4" fontWeight={900}>
+            Razanova.
+          </Typography>
+          <Typography
+            variant="overline"
+            sx={{ letterSpacing: 2, opacity: 0.8 }}
+          >
+            Pure Skin Intelligence
           </Typography>
         </Box>
 
-        <Box sx={{ p: { xs: 3, md: 4 } }}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={7}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 3,
-                  borderRadius: 4,
-                  border: "1px solid rgba(0,0,0,0.06)",
-                  background: "rgba(255,255,255,0.9)",
-                }}
-              >
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                  <SpaIcon sx={{ color: "#8a5a44" }} />
-                  <Typography sx={{ fontWeight: 950, fontSize: 20, color: "#3b2a1e" }}>
-                    About Razanova
-                  </Typography>
-                </Stack>
+        <Box sx={{ p: 4 }}>
+          <Typography variant="h6" fontWeight={800} color="#3d2b1f" mb={1}>
+            Philosophy
+          </Typography>
+          <Typography variant="body2" color="#5c4d42" lineHeight={1.8} mb={3}>
+            We provide precision-led skincare protocols. By analyzing your
+            unique profile, we deliver essential routines that prioritize health
+            and simplicity above all else.
+          </Typography>
 
-                <Typography sx={{ color: "text.secondary", lineHeight: 1.8 }}>
-                  Razanova helps you discover your skin needs and build a simple routine.
-                  The goal is to make skincare easier: clear steps, clean choices, and a smooth experience.
-                </Typography>
+          <Divider sx={{ mb: 3 }} />
 
-                <Divider sx={{ my: 2 }} />
+          {/* Contact Details */}
+          <Stack spacing={2}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <MailOutline sx={{ color: "#8a5a44" }} />
+              <Typography variant="body2" fontWeight={700}>
+                support@razanova.com
+              </Typography>
+            </Stack>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Instagram sx={{ color: "#8a5a44" }} />
+              <Typography variant="body2" fontWeight={700}>
+                @razanova.skin
+              </Typography>
+            </Stack>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <PhoneIphone sx={{ color: "#8a5a44" }} />
+              <Typography variant="body2" fontWeight={700}>
+                +962 792 33311
+              </Typography>
+            </Stack>
+          </Stack>
 
-                <Stack spacing={1}>
-                  <Typography sx={{ fontWeight: 900, color: "#6f4e37" }}>What we focus on:</Typography>
-                  <Typography sx={{ color: "text.secondary" }}>• Simple routine (AM + PM)</Typography>
-                  <Typography sx={{ color: "text.secondary" }}>• Products that match your skin</Typography>
-                  <Typography sx={{ color: "text.secondary" }}>• Easy experience inside the app</Typography>
-                </Stack>
-              </Paper>
-            </Grid>
-
-            <Grid item xs={12} md={5}>
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 3,
-                  borderRadius: 4,
-                  border: "1px solid rgba(0,0,0,0.06)",
-                  background: "rgba(255,255,255,0.9)",
-                }}
-              >
-                <Typography sx={{ fontWeight: 950, fontSize: 20, color: "#3b2a1e", mb: 2 }}>
-                  Contact Us
-                </Typography>
-
-                <Stack spacing={1.6}>
-                  <Stack direction="row" spacing={1.2} alignItems="center">
-                    <MailOutlineIcon sx={{ color: "#8a5a44" }} />
-                    <Typography sx={{ fontWeight: 800 }}>support@razanova.com</Typography>
-                  </Stack>
-
-                  <Stack direction="row" spacing={1.2} alignItems="center">
-                    <PhoneIphoneIcon sx={{ color: "#8a5a44" }} />
-                    <Typography sx={{ fontWeight: 800 }}>+962 792 3331111</Typography>
-                  </Stack>
-
-                  <Stack direction="row" spacing={1.2} alignItems="center">
-                    <InstagramIcon sx={{ color: "#8a5a44" }} />
-                    <Typography sx={{ fontWeight: 800 }}>@razanova</Typography>
-                  </Stack>
-                </Stack>
-
-                <Box
-                  sx={{
-                    mt: 3,
-                    p: 2,
-                    borderRadius: 3,
-                    background: "rgba(138,90,68,0.07)",
-                    border: "1px dashed rgba(138,90,68,0.25)",
-                  }}
-                >
-                  <Typography sx={{ fontWeight: 900, color: "#6f4e37" }}>
-                    Business Hours
-                  </Typography>
-                  <Typography sx={{ color: "text.secondary" }}>
-                    Sun – Thu: 10:00 AM – 6:00 PM
-                  </Typography>
-                </Box>
-              </Paper>
-            </Grid>
-          </Grid>
+          <Box sx={{ mt: 4, textAlign: "center" }}>
+            <Button
+              variant="contained"
+              onClick={() => navigate("/")}
+              sx={{
+                bgcolor: "#5a3e2b",
+                color: "#fff",
+                fontWeight: 800,
+                borderRadius: 2,
+                textTransform: "none",
+                width: "100%",
+                py: 1.2,
+                "&:hover": { bgcolor: "#3d2b1f" },
+              }}
+            >
+              Return Home
+            </Button>
+            <Typography
+              variant="caption"
+              display="block"
+              mt={2}
+              color="#a57a56"
+              fontWeight={700}
+            >
+              SUN — THU | 10:00 — 18:00
+            </Typography>
+          </Box>
         </Box>
       </Paper>
     </Box>

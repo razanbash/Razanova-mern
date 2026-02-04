@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -6,282 +6,267 @@ import {
   Typography,
   Button,
   Stack,
-  Chip,
   Divider,
+  Tabs,
+  Tab,
+  Checkbox,
+  LinearProgress,
 } from "@mui/material";
+import {
+  Spa,
+  AutoAwesome,
+  WaterDrop,
+  FavoriteBorder,
+} from "@mui/icons-material";
+
+const ROUTINES = {
+  Dry: {
+    am: ["Cream Cleanser", "HA Serum", "Rich Moisturizer", "SPF 30+"],
+    pm: ["Cream Cleanser", "Hydrating Serum", "Facial Oil"],
+    tip: "Focus on lipid replacement and moisture retention.",
+  },
+  Oily: {
+    am: [
+      "Gel Cleanser",
+      "Niacinamide Serum",
+      "Oil-Free Hydrator",
+      "Matte SPF 30+",
+    ],
+    pm: ["Gel Cleanser", "BHA Exfoliant", "Lightweight Moisturizer"],
+    tip: "Maintain hydration to prevent sebum overproduction.",
+  },
+  Combination: {
+    am: [
+      "Gentle Cleanser",
+      "Hydrating Serum",
+      "Targeted Moisturizer",
+      "SPF 30+",
+    ],
+    pm: ["Gentle Cleanser", "T-Zone Treatment", "Moisturizer"],
+    tip: "Address oiliness and dryness independently.",
+  },
+  Normal: {
+    am: ["Gentle Cleanser", "Daily Moisturizer", "Sunscreen SPF 30+"],
+    pm: ["Gentle Cleanser", "Night Moisturizer"],
+    tip: "Keep it simple and consistent.",
+  },
+};
 
 export default function RoutinePage() {
   const navigate = useNavigate();
+  const [profile] = useState(() =>
+    JSON.parse(localStorage.getItem("skinProfile") || "null"),
+  );
+  const [tab, setTab] = useState(0);
+  const [done, setDone] = useState({});
 
-  let skinProfile = null;
-  try {
-    skinProfile = JSON.parse(localStorage.getItem("skinProfile") || "null");
-  } catch {
-    skinProfile = null;
-  }
-
-  const reset = () => {
-    localStorage.removeItem("skinProfile");
-    navigate("/assessment");
-  };
-
-  let routine = null;
-
-  if (skinProfile) {
-    const type = skinProfile.type || "Normal";
-    const sensitive = !!skinProfile.sensitive;
-    const sensNote = sensitive ? " (Sensitive-friendly)" : "";
-
-    if (type === "Dry") {
-      routine = {
-        title: "Dry Skin Routine",
-        chips: ["Dry", sensitive ? "Sensitive" : "Normal"],
-        am: [
-          "Cream cleanser",
-          "Hydrating serum (Hyaluronic acid)",
-          "Rich moisturizer",
-          "Sunscreen SPF 30+",
-        ],
-        pm: [
-          "Cream cleanser",
-          "Hydrating serum",
-          sensitive
-            ? "Barrier repair moisturizer"
-            : "Moisturizer + face oil (optional)",
-        ],
-        tip: "Focus on hydration and avoid harsh foaming cleansers." + sensNote,
-      };
-    } else if (type === "Oily") {
-      routine = {
-        title: "Oily Skin Routine",
-        chips: ["Oily", sensitive ? "Sensitive" : "Normal"],
-        am: [
-          "Gel cleanser",
-          sensitive ? "Niacinamide (optional)" : "Niacinamide serum",
-          "Light moisturizer (gel)",
-          "Sunscreen SPF 30+",
-        ],
-        pm: [
-          "Gel cleanser",
-          sensitive ? "Simple moisturizer" : "BHA 2–3x/week OR retinol slowly",
-          "Moisturizer (light)",
-        ],
-        tip: "Don’t over-wash. Add active ingredients slowly." + sensNote,
-      };
-    } else if (type === "Combination") {
-      routine = {
-        title: "Combination Skin Routine",
-        chips: ["Combination", sensitive ? "Sensitive" : "Normal"],
-        am: [
-          "Gentle cleanser",
-          "Light hydrating serum",
-          "Moisturizer (focus on dry areas)",
-          "Sunscreen SPF 30+",
-        ],
-        pm: [
-          "Gentle cleanser",
-          sensitive
-            ? "Moisturizer (simple)"
-            : "Niacinamide OR BHA on T-zone 2–3x/week",
-          "Moisturizer",
-        ],
-        tip: "Treat T-zone and cheeks differently if needed." + sensNote,
-      };
-    } else {
-      routine = {
-        title: "Normal Skin Routine",
-        chips: ["Normal", sensitive ? "Sensitive" : "Normal"],
-        am: ["Gentle cleanser", "Moisturizer", "Sunscreen SPF 30+"],
-        pm: ["Gentle cleanser", "Moisturizer"],
-        tip: "Keep it simple and consistent." + sensNote,
-      };
-    }
-  }
-
-  if (!skinProfile) {
+  if (!profile)
     return (
       <Box
         sx={{
-          minHeight: "calc(100vh - 64px)",
+          minHeight: "100vh",
           display: "grid",
           placeItems: "center",
-          p: 2,
-          background: "linear-gradient(135deg, #f7efe7, #ead7c4)",
+          bgcolor: "#F3E9DC",
         }}
       >
-        <Paper
-          elevation={12}
+        <Button
+          variant="outlined"
+          onClick={() => navigate("/assessment")}
           sx={{
-            width: "min(900px, 96vw)",
-            borderRadius: 5,
-            overflow: "hidden",
-            background: "rgba(255,255,255,0.88)",
-            boxShadow: "0 24px 70px rgba(111,78,55,0.22)",
+            color: "#3d2b1f",
+            borderColor: "#3d2b1f",
+            borderRadius: 0,
+            fontWeight: 700,
           }}
         >
-          <Box
-            sx={{
-              p: 3,
-              background: "linear-gradient(135deg, #7a553c, #a57a56)",
-              color: "white",
-            }}
-          >
-            <Typography variant="h4" sx={{ fontWeight: 1000 }}>
-              Routine
-            </Typography>
-            <Typography sx={{ opacity: 0.9 }}>
-              You don’t have a skin type yet
-            </Typography>
-          </Box>
-
-          <Box sx={{ p: 3 }}>
-            <Typography sx={{ mb: 2 }}>
-              Please take the assessment first, then come back here.
-            </Typography>
-
-            <Button
-              variant="contained"
-              onClick={() => navigate("/assessment")}
-              sx={{
-                bgcolor: "#8a5a44",
-                "&:hover": { bgcolor: "#734735" },
-                borderRadius: 3,
-                fontWeight: 900,
-              }}
-            >
-              Go to Assessment
-            </Button>
-          </Box>
-        </Paper>
+          Access Assessment
+        </Button>
       </Box>
     );
-  }
+
+  const type = profile.type || "Normal",
+    routine = ROUTINES[type] || ROUTINES.Normal;
+  const currentSteps = tab === 0 ? routine.am : routine.pm;
+  const progress =
+    (currentSteps.filter((_, i) => done[`${tab}-${i}`]).length /
+      currentSteps.length) *
+    100;
 
   return (
     <Box
       sx={{
-        minHeight: "calc(100vh - 64px)",
-        display: "grid",
-        placeItems: "center",
-        p: 2,
-        background: "linear-gradient(135deg, #f7efe7, #ead7c4)",
+        minHeight: "100vh",
+        bgcolor: "#F3E9DC",
+        py: 6,
+        px: 2,
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <Paper
-        elevation={12}
-        sx={{
-          width: "min(1100px, 96vw)",
-          borderRadius: 5,
-          overflow: "hidden",
-          background: "rgba(255,255,255,0.88)",
-          boxShadow: "0 24px 70px rgba(111,78,55,0.22)",
-        }}
-      >
-        <Box
+      {[
+        { I: Spa, t: "5%", l: "5%", s: 100 },
+        { I: AutoAwesome, t: "15%", r: "8%", s: 70 },
+        { I: WaterDrop, b: "10%", l: "10%", s: 90 },
+        { I: FavoriteBorder, b: "12%", r: "12%", s: 80 },
+      ].map((d, i) => (
+        <d.I
+          key={i}
           sx={{
-            p: 3,
-            background: "linear-gradient(135deg, #7a553c, #a57a56)",
-            color: "white",
+            position: "absolute",
+            top: d.t,
+            left: d.l,
+            right: d.r,
+            bottom: d.b,
+            fontSize: d.s,
+            color: "#dcd0c0",
+            opacity: 0.5,
+            pointerEvents: "none",
           }}
-        >
-          <Typography variant="h4" sx={{ fontWeight: 1000 }}>
-            {routine.title}
-          </Typography>
+        />
+      ))}
 
-          <Stack direction="row" spacing={1} sx={{ mt: 1, flexWrap: "wrap" }}>
-            {routine.chips.map((c) => (
-              <Chip
-                key={c}
-                label={c}
-                sx={{ bgcolor: "rgba(255,255,255,0.2)", color: "white" }}
-              />
-            ))}
-          </Stack>
+      <Box sx={{ maxWidth: 650, mx: "auto", position: "relative", zIndex: 1 }}>
+        <Box sx={{ mb: 4, textAlign: "left" }}>
+          <Typography
+            variant="overline"
+            sx={{ letterSpacing: 3, color: "#8c7b6c", fontWeight: 700 }}
+          >
+            Dermatological Regimen
+          </Typography>
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 900, color: "#3d2b1f", mb: 1 }}
+          >
+            {type.toUpperCase()} SKIN
+          </Typography>
+          <Divider sx={{ width: 50, height: 3, bgcolor: "#3d2b1f", mb: 2 }} />
         </Box>
 
-        <Box sx={{ p: 3 }}>
-          <Typography sx={{ mb: 2, color: "#6f4e37", fontWeight: 900 }}>
-            {routine.tip}
-          </Typography>
-
-          <Box
+        <Paper
+          elevation={0}
+          sx={{
+            bgcolor: "#fff",
+            border: "1px solid #dcd7d1",
+            p: { xs: 3, md: 5 },
+            borderRadius: 0,
+          }}
+        >
+          <Box sx={{ mb: 4 }}>
+            <LinearProgress
+              variant="determinate"
+              value={progress}
+              sx={{
+                height: 4,
+                bgcolor: "#f4f1ee",
+                "& .MuiLinearProgress-bar": { bgcolor: "#3d2b1f" },
+              }}
+            />
+          </Box>
+          <Tabs
+            value={tab}
+            onChange={(e, val) => setTab(val)}
             sx={{
-              display: "grid",
-              gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-              gap: 2,
+              mb: 3,
+              borderBottom: "1px solid #f4f1ee",
+              "& .MuiTabs-indicator": { bgcolor: "#3d2b1f" },
+              "& .MuiTab-root": {
+                color: "#8c7b6c",
+                fontWeight: 700,
+                "&.Mui-selected": { color: "#3d2b1f" },
+              },
             }}
           >
-            <Paper
-              sx={{ p: 2.5, borderRadius: 4, border: "1px solid #eadfd6" }}
-            >
-              <Typography sx={{ fontWeight: 950, color: "#6f4e37", mb: 1 }}>
-                AM Routine
-              </Typography>
-              {routine.am.map((s, i) => (
-                <Typography key={i} sx={{ mb: 0.7 }}>
-                  • {s}
+            <Tab label="Morning" />
+            <Tab label="Evening" />
+          </Tabs>
+          <Typography
+            variant="body2"
+            sx={{
+              mb: 4,
+              color: "#5c4d42",
+              fontStyle: "italic",
+              borderLeft: "3px solid #8c7b6c",
+              pl: 2,
+            }}
+          >
+            Protocol: {routine.tip}
+          </Typography>
+          <Stack spacing={0}>
+            {currentSteps.map((step, i) => (
+              <Box
+                key={`${tab}-${i}`}
+                onClick={() =>
+                  setDone({ ...done, [`${tab}-${i}`]: !done[`${tab}-${i}`] })
+                }
+                sx={{
+                  py: 2,
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  borderBottom: "1px solid #f4f1ee",
+                  opacity: done[`${tab}-${i}`] ? 0.4 : 1,
+                }}
+              >
+                <Checkbox
+                  checked={!!done[`${tab}-${i}`]}
+                  sx={{
+                    color: "#dcd7d1",
+                    "&.Mui-checked": { color: "#3d2b1f" },
+                    p: 0,
+                    mr: 2,
+                  }}
+                />
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: 500,
+                    color: "#3d2b1f",
+                    textDecoration: done[`${tab}-${i}`]
+                      ? "line-through"
+                      : "none",
+                  }}
+                >
+                  {step}
                 </Typography>
-              ))}
-            </Paper>
-
-            <Paper
-              sx={{ p: 2.5, borderRadius: 4, border: "1px solid #eadfd6" }}
-            >
-              <Typography sx={{ fontWeight: 950, color: "#6f4e37", mb: 1 }}>
-                PM Routine
-              </Typography>
-              {routine.pm.map((s, i) => (
-                <Typography key={i} sx={{ mb: 0.7 }}>
-                  • {s}
-                </Typography>
-              ))}
-            </Paper>
-          </Box>
-
-          <Divider sx={{ my: 2 }} />
-
-          <Stack direction="row" spacing={1} flexWrap="wrap">
+              </Box>
+            ))}
+          </Stack>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mt={6}>
             <Button
-              variant="outlined"
-              onClick={() => navigate("/profile")}
-              sx={{
-                borderRadius: 3,
-                borderColor: "rgba(111,78,55,0.45)",
-                color: "#6f4e37",
-                fontWeight: 900,
-              }}
-            >
-              Back to Profile
-            </Button>
-
-            <Button
-              variant="outlined"
-              onClick={reset}
-              sx={{
-                borderRadius: 3,
-                borderColor: "rgba(180,80,80,0.55)",
-                color: "#b24a4a",
-                fontWeight: 900,
-              }}
-            >
-              Reset
-            </Button>
-
-            <Button
+              fullWidth
               variant="contained"
               onClick={() => navigate("/products")}
               sx={{
-                borderRadius: 3,
-                bgcolor: "#8a5a44",
-                "&:hover": { bgcolor: "#734735" },
-                fontWeight: 900,
+                bgcolor: "#3d2b1f",
+                color: "#fff",
+                borderRadius: 0,
+                fontWeight: 700,
+                py: 1.5,
+                "&:hover": { bgcolor: "#2a1e15" },
               }}
             >
-              Products
+              Recommended Products
+            </Button>
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={() => {
+                localStorage.removeItem("skinProfile");
+                navigate("/assessment");
+              }}
+              sx={{
+                color: "#3d2b1f",
+                borderColor: "#3d2b1f",
+                borderRadius: 0,
+                fontWeight: 700,
+              }}
+            >
+              Reset Protocol
             </Button>
           </Stack>
-        </Box>
-      </Paper>
+        </Paper>
+      </Box>
     </Box>
   );
 }

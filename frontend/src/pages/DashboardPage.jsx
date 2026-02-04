@@ -1,36 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   Box,
   Paper,
   Typography,
-  Grid,
-  Card,
-  CardActionArea,
-  CardContent,
   Button,
   Stack,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Divider,
 } from "@mui/material";
-import toast from "react-hot-toast";
-
-import SpaIcon from "@mui/icons-material/Spa";
-import QuizIcon from "@mui/icons-material/Quiz";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import PersonIcon from "@mui/icons-material/Person";
-import LogoutIcon from "@mui/icons-material/Logout";
+import {
+  Menu,
+  Quiz,
+  AutoAwesome,
+  ShoppingBag,
+  Person,
+  Logout,
+  Spa,
+  WaterDrop,
+  FavoriteBorder,
+} from "@mui/icons-material";
 
 export default function DashboardPage() {
-  const navigate = useNavigate();
-
-  const [token, setToken] = useState(localStorage.getItem("token"));
-  const [user, setUser] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("user") || "null");
-    } catch {
-      return null;
-    }
-  });
+  const navigate = useNavigate(),
+    [open, setOpen] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user") || "null"),
+    token = localStorage.getItem("token");
+  const name = user?.name || user?.fullName || "User";
 
   useEffect(() => {
     if (!token) {
@@ -40,233 +41,198 @@ export default function DashboardPage() {
   }, [token, navigate]);
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setToken(null);
-    setUser(null);
+    localStorage.clear();
     toast.success("Logged out");
     navigate("/");
   };
 
-  const name = user?.fullName || user?.name || user?.username || "User";
-
-  const bigCard = (title, sub, icon, onClick, primary = false) => (
-    <Card
-      sx={{
-        borderRadius: 3,
-        height: "100%",
-        border: "1px solid #eadfd6",
-        boxShadow: "0 12px 30px rgba(0,0,0,0.10)",
-        background: primary
-          ? "linear-gradient(135deg, #6f4e37, #a57a56)"
-          : "white",
-        color: primary ? "white" : "#222",
-        transition: "0.2s",
-        "&:hover": { transform: "translateY(-4px)" },
-      }}
-    >
-      <CardActionArea onClick={onClick} sx={{ height: "100%" }}>
-        <CardContent sx={{ p: 3.2 }}>
-          <Stack direction="row" spacing={1} alignItems="center">
-            {icon}
-            <Typography sx={{ fontWeight: 900, fontSize: 18 }}>
-              {title}
-            </Typography>
-          </Stack>
-          <Typography
-            variant="body2"
-            sx={{ mt: 0.6, opacity: primary ? 0.9 : 0.75 }}
-          >
-            {sub}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
-  );
+  const navItems = [
+    {
+      label: "Skin Quiz",
+      path: "/assessment",
+      icon: <Quiz />,
+      desc: "Start beauty assessment",
+      primary: true,
+    },
+    {
+      label: "My Routine",
+      path: "/routine",
+      icon: <AutoAwesome />,
+      desc: "View skincare routine",
+    },
+    {
+      label: "Products",
+      path: "/products",
+      icon: <ShoppingBag />,
+      desc: "Browse beauty products",
+    },
+    {
+      label: "Profile",
+      path: "/profile",
+      icon: <Person />,
+      desc: "Manage account",
+    },
+  ];
 
   return (
     <Box
       sx={{
         minHeight: "100vh",
-        width: "100vw",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        px: 2,
+        display: "grid",
+        placeItems: "center",
+        p: 2,
+        background: "linear-gradient(135deg, #c4a484 0%, #8b5e3c 100%)",
         position: "relative",
         overflow: "hidden",
-        background: "linear-gradient(135deg, #e7d2bd, #c9a27c)",
       }}
     >
-      <Box
-        sx={{
-          position: "absolute",
-          top: "-160px",
-          left: "-160px",
-          width: 520,
-          height: 520,
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.25)",
-          filter: "blur(35px)",
-        }}
-      />
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: "-200px",
-          right: "-200px",
-          width: 620,
-          height: 620,
-          borderRadius: "50%",
-          background: "rgba(255,255,255,0.18)",
-          filter: "blur(40px)",
-        }}
-      />
-      <Box
-        sx={{
-          position: "absolute",
-          top: "20%",
-          right: "12%",
-          width: 360,
-          height: 360,
-          borderRadius: "50%",
-          background: "rgba(111,78,55,0.12)",
-          filter: "blur(45px)",
-        }}
-      />
+      {[
+        { I: Spa, t: "5%", l: "5%", s: 100 },
+        { I: AutoAwesome, t: "15%", r: "8%", s: 70 },
+        { I: WaterDrop, b: "10%", l: "10%", s: 90 },
+        { I: FavoriteBorder, b: "12%", r: "12%", s: 80 },
+      ].map((d, i) => (
+        <d.I
+          key={i}
+          sx={{
+            position: "absolute",
+            top: d.t,
+            left: d.l,
+            right: d.r,
+            bottom: d.b,
+            fontSize: d.s,
+            color: "#fff",
+            opacity: 0.15,
+          }}
+        />
+      ))}
 
-      <SpaIcon
-        sx={{
-          position: "absolute",
-          top: 60,
-          left: 70,
-          fontSize: 240,
-          opacity: 0.06,
-          color: "#6f4e37",
-          transform: "rotate(-10deg)",
-          pointerEvents: "none",
-        }}
-      />
-      <AutoAwesomeIcon
-        sx={{
-          position: "absolute",
-          bottom: 80,
-          left: 130,
-          fontSize: 260,
-          opacity: 0.05,
-          color: "#6f4e37",
-          transform: "rotate(10deg)",
-          pointerEvents: "none",
-        }}
-      />
-      <ShoppingBagIcon
-        sx={{
-          position: "absolute",
-          top: 110,
-          right: 100,
-          fontSize: 280,
-          opacity: 0.05,
-          color: "#6f4e37",
-          transform: "rotate(8deg)",
-          pointerEvents: "none",
-        }}
-      />
-      <PersonIcon
-        sx={{
-          position: "absolute",
-          bottom: 70,
-          right: 150,
-          fontSize: 260,
-          opacity: 0.05,
-          color: "#6f4e37",
-          transform: "rotate(-8deg)",
-          pointerEvents: "none",
-        }}
-      />
+      <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
+        <Box sx={{ width: 250, p: 2 }}>
+          <Typography fontWeight={900} color="#6f4e37" mb={1}>
+            Menu
+          </Typography>
+          <Divider />
+          <List>
+            {navItems.map((item) => (
+              <ListItemButton
+                key={item.label}
+                onClick={() => {
+                  navigate(item.path);
+                  setOpen(false);
+                }}
+              >
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            ))}
+            <Divider />
+            <ListItemButton onClick={logout}>
+              <ListItemIcon>
+                <Logout />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </List>
+        </Box>
+      </Drawer>
 
       <Paper
-        elevation={8}
+        elevation={15}
         sx={{
-          maxWidth: 1000,
+          width: "min(1150px, 96vw)",
           borderRadius: 4,
           overflow: "hidden",
-          background: "rgba(255,255,255,0.92)",
+          background: "rgba(255,255,255,0.94)",
           zIndex: 2,
+          height: 420, 
         }}
       >
         <Box
           sx={{
-            p: { xs: 3, md: 4 },
-            background: "linear-gradient(135deg, #7a553c, #a57a56)",
+            p: 3,
+            background: "linear-gradient(135deg, #6f4e37, #a57a56)",
             color: "white",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          <Stack direction="row" spacing={1} alignItems="center">
-            <SpaIcon sx={{ fontSize: 28 }} />
-            <Typography variant="h4" sx={{ fontWeight: 900 }}>
+          <Box>
+            <Typography variant="h5" fontWeight={900}>
               Dashboard
             </Typography>
-          </Stack>
-          <Typography sx={{ mt: 0.6, opacity: 0.9, fontSize: 16 }}>
-            Welcome, {name}
-          </Typography>
+            <Typography variant="body2" sx={{ opacity: 0.9 }}>
+              Welcome, {name}
+            </Typography>
+          </Box>
+          <Button
+            variant="outlined"
+            onClick={() => setOpen(true)}
+            startIcon={<Menu />}
+            sx={{
+              color: "white",
+              borderColor: "rgba(255,255,255,0.5)",
+              fontWeight: 900,
+            }}
+          >
+            MENU
+          </Button>
         </Box>
 
-        <Box sx={{ p: { xs: 2, md: 3 } }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              {bigCard(
-                "Skin Quiz",
-                "Start your beauty assessment",
-                <QuizIcon />,
-                () => navigate("/assessment"),
-                true,
-              )}
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              {bigCard(
-                "My Routine",
-                "View your skincare routine",
-                <AutoAwesomeIcon />,
-                () => navigate("/routine"),
-              )}
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              {bigCard(
-                "Products",
-                "Browse beauty products",
-                <ShoppingBagIcon />,
-                () => navigate("/products"),
-              )}
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              {bigCard("Profile", "Manage your account", <PersonIcon />, () =>
-                navigate("/profile"),
-              )}
-            </Grid>
-
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                variant="contained"
-                startIcon={<LogoutIcon />}
-                onClick={logout}
+        <Box sx={{ p: 3 }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+              gap: 2,
+              mb: 2,
+            }}
+          >
+            {navItems.map((item) => (
+              <Paper
+                key={item.label}
+                onClick={() => navigate(item.path)}
                 sx={{
-                  mt: 1,
-                  py: 1.6,
+                  p: 2,
                   borderRadius: 3,
-                  fontWeight: 900,
-                  bgcolor: "#6f4e37",
-                  "&:hover": { bgcolor: "#5a3e2b" },
+                  cursor: "pointer",
+                  border: "1px solid #eadfd6",
+                  background: item.primary
+                    ? "linear-gradient(135deg, #6f4e37, #a57a56)"
+                    : "#fff",
+                  color: item.primary ? "white" : "inherit",
+                  transition: "0.2s",
+                  "&:hover": { transform: "translateY(-2px)" },
                 }}
               >
-                Logout
-              </Button>
-            </Grid>
-          </Grid>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  {React.cloneElement(item.icon, {
+                    sx: { color: item.primary ? "white" : "#6f4e37" },
+                  })}
+                  <Typography fontWeight={900}>{item.label}</Typography>
+                </Stack>
+                <Typography sx={{ opacity: 0.7, fontSize: 15 }}>
+                  {item.desc}
+                </Typography>
+              </Paper>
+            ))}
+          </Box>
+          <Button
+            fullWidth
+            variant="contained"
+            startIcon={<Logout />}
+            onClick={logout}
+            sx={{
+              py: 1.5,
+              borderRadius: 3,
+              fontWeight: 900,
+              bgcolor: "#6f4e37",
+              "&:hover": { bgcolor: "#5a3e2b" },
+            }}
+          >
+            Logout
+          </Button>
         </Box>
       </Paper>
     </Box>

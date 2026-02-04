@@ -14,7 +14,9 @@ import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ExpertDashboard from "./pages/ExpertDashboard.jsx";
 import PageLayout from "./components/layout/PageLayout.jsx";
 import Footer from "./components/layout/Footer.jsx";
-import AboutPage from "./pages/AboutPage"
+import AboutPage from "./pages/AboutPage";
+import Sidebar from "./components/layout/Sidebar.jsx";
+
 export default function App() {
   return (
     <>
@@ -32,7 +34,8 @@ export default function App() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/expert/dashboard" element={<ExpertDashboard />} />
           <Route path="/PageLayout" element={<PageLayout />} />
-           <Route path="/about" element={<AboutPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/Sidebar" element={<Sidebar />} />
         </Routes>
         <Footer />
       </BrowserRouter>

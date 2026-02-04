@@ -12,8 +12,8 @@ export default function Footer() {
         color: "#fff",
       }}
     >
-      <Typography sx={{ fontSize: 20, opacity: 0.9  }}>
-        © 2026 Razanova. All rights reserved.
+      <Typography sx={{ fontSize: 20, opacity: 0.9 }}>
+        ©2026 Razanova. All rights reserved.
       </Typography>
     </Box>
   );

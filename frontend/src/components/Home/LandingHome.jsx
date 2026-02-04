@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
 import { Box, Paper, Typography, Button } from "@mui/material";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import SpaOutlinedIcon from "@mui/icons-material/SpaOutlined";

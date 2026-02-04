@@ -33,193 +33,218 @@ const empty = {
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(empty);
-  const [editId, setEditId] = useState(null);
+  const [editId, setEditId] = useState("");
 
-  const isAdmin =
-    JSON.parse(localStorage.getItem("user") || "null")?.role === "admin";
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const isAdmin = user?.role === "admin";
 
-  //..................................................................
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get("/products");
+      const data = res.data?.products || res.data || [];
+      setProducts(Array.isArray(data) ? data : []);
+    } catch (err) {
+      toast.error("Failed to load products");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    api
-      .get("/products")
-      .then((res) => {
-        const data = res?.data?.products || res?.data || [];
-        setProducts(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch(() => {
-        toast.error("Failed to load products");
-        setLoading(false);
-      });
+    fetchProducts();
   }, []);
 
-  //..................................................................
   const openAdd = () => {
-    setEditId(null);
+    setEditId("");
     setForm(empty);
     setOpen(true);
   };
 
-  //..................................................................
   const openEdit = (p) => {
-    setEditId(p?._id || p?.id);
+    setEditId(p._id);
     setForm({
-      name: p?.name || "",
-      price: p?.price ?? "",
-      image: p?.image || "",
-      category: p?.category || "",
-      description: p?.description || "",
+      name: p.name || "",
+      price: p.price || "",
+      image: p.image || "",
+      category: p.category || "",
+      description: p.description || "",
     });
     setOpen(true);
   };
 
-  //..................................................................
   const save = async () => {
-    if (!isAdmin) return toast.error("Admin only");
-    if (!form.name.trim()) return toast.error("Name required");
+    if (!isAdmin) {
+      toast.error("Admin only");
+      return;
+    }
 
-    const body = {
-      name: form.name.trim(),
-      price: Number(form.price || 0),
-      image: form.image.trim(),
-      category: form.category.trim(),
-      description: form.description.trim(),
-    };
+    if (!form.name || !form.price) {
+      toast.error("Name and Price are required");
+      return;
+    }
 
     try {
-      if (!editId) {
-        const res = await api.post("/products", body);
-        const created = res?.data?.product || res?.data;
-
-        setProducts((prev) => [created, ...prev]);
-        toast.success("Added");
+      if (editId) {
+        await api.put(`/products/${editId}`, form);
+        toast.success("Product updated");
       } else {
-        const res = await api.put(`/products/${editId}`, body);
-        const updated = res?.data?.product || res?.data;
-
-        setProducts((prev) =>
-          prev.map((p) =>
-            String(p?._id || p?.id) === String(editId)
-              ? { ...p, ...(updated || body) }
-              : p,
-          ),
-        );
-
-        const r = await api.get("/products");
-        const data = r?.data?.products || r?.data || [];
-        setProducts(Array.isArray(data) ? data : []);
-
-        toast.success("Updated");
+        await api.post("/products", form);
+        toast.success("Product added");
       }
 
       setOpen(false);
-    } catch {
-      toast.error("Save failed");
+      setForm(empty);
+      setEditId("");
+      fetchProducts();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Save failed");
+      console.error(err);
     }
   };
 
-  const del = async (p) => {
+  const del = async (id) => {
     if (!isAdmin) return toast.error("Admin only");
-
-    if (!window.confirm("Delete this product?")) return;
-
-    const pid = p?._id || p?.id;
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
 
     try {
-      setProducts((prev) => prev.filter((x) => (x?._id || x?.id) !== pid));
-
-      await api.delete(`/products/${pid}`);
+      await api.delete(`/products/${id}`);
       toast.success("Deleted");
-    } catch {
+      fetchProducts();
+    } catch (err) {
       toast.error("Delete failed");
-
-      const r = await api.get("/products");
-      const data = r?.data?.products || r?.data || [];
-      setProducts(Array.isArray(data) ? data : []);
+      console.error(err);
     }
   };
 
   return (
-    <Box sx={{ bgcolor: "white", minHeight: "100vh", p: { xs: 2, md: 3 } }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-        <Typography variant="h5" fontWeight={800}>
-          Products
+    <Box
+      sx={{
+        minHeight: "100vh",
+        p: 3,
+        background: "linear-gradient(135deg, #f3eadf, #e6d2bf)",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 4,
+          maxWidth: 1200,
+          mx: "auto",
+        }}
+      >
+        <Typography variant="h5" fontWeight={900} color="#5a3e2b">
+          Product Management
         </Typography>
 
         {isAdmin && (
-          <Button variant="contained" startIcon={<AddIcon />} onClick={openAdd}>
-            Add
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={openAdd}
+            sx={{
+              bgcolor: "#6f4e37",
+              fontWeight: 800,
+              "&:hover": { bgcolor: "#5a3e2b" },
+            }}
+          >
+            Add Product
           </Button>
         )}
       </Box>
 
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
-          <CircularProgress />
+        <Box sx={{ display: "flex", justifyContent: "center", py: 10 }}>
+          <CircularProgress sx={{ color: "#6f4e37" }} />
         </Box>
       ) : (
         <Box
           sx={{
+            maxWidth: 1200,
+            mx: "auto",
             display: "grid",
-            gap: 2,
+            gap: 3,
             gridTemplateColumns: {
               xs: "1fr",
               sm: "repeat(2, 1fr)",
               md: "repeat(3, 1fr)",
-              background: "#eee3dd",
             },
           }}
         >
           {products.map((p) => (
             <Card
-              key={p?._id || p?.id}
+              key={p._id}
               sx={{
-                bgcolor: "white",
-                borderRadius: 2,
-                boxShadow: 1,
-                overflow: "hidden",
-                maxWidth: 480,
-                mx: "auto",
+                borderRadius: 3,
+                bgcolor: "rgba(255,255,255,0.85)",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+                display: "flex",
+                flexDirection: "column",
+                transition: "transform 0.2s",
+                "&:hover": { transform: "translateY(-4px)" },
               }}
             >
               <CardMedia
                 component="img"
-                image={p?.image || "https://via.placeholder.com/400"}
-                alt={p?.name || "product"}
-                sx={{
-                  height: 450,
-                  objectFit: "cover",
-                }}
+                image={p.image || "https://via.placeholder.com/400"}
+                sx={{ height: 400, objectFit: "cover" }}
+                
               />
 
-              <CardContent>
-                <Typography fontWeight={800} noWrap>
-                  {p?.name}
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" fontWeight={900} color="#333">
+                  {p.name}
                 </Typography>
-
-                <Typography sx={{ mt: 0.5 }}>${p?.price}</Typography>
-
-                <Typography variant="body2" sx={{ opacity: 0.7 }}>
-                  {p?.category}
+                <Typography
+                  variant="subtitle1"
+                  color="#6f4e37"
+                  fontWeight={700}
+                >
+                  ${p.price}
                 </Typography>
-
-                <Typography variant="body2" sx={{ mt: 1, opacity: 0.85 }}>
-                  {p?.description
-                    ? p.description.length > 80
-                      ? p.description.slice(0, 80) + "..."
-                      : p.description
-                    : "No description"}
+                <Typography
+                  variant="caption"
+                  sx={{ display: "block", mb: 1, color: "#888" }}
+                >
+                  {p.category}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {p.description}
                 </Typography>
 
                 {isAdmin && (
-                  <Box sx={{ mt: 1 }}>
-                    <IconButton onClick={() => openEdit(p)}>
+                  <Box
+                    sx={{
+                      mt: 2,
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      borderTop: "1px solid rgba(0,0,0,0.05)",
+                      pt: 1,
+                    }}
+                  >
+                    <IconButton
+                      onClick={() => openEdit(p)}
+                      sx={{
+                        color: "#a67c52",
+                        "&:hover": { bgcolor: "rgba(166,124,82,0.1)" },
+                      }}
+                    >
                       <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => del(p)}>
+
+                    <IconButton
+                      onClick={() => del(p._id)}
+                      sx={{
+                        color: "#5d5d5d",
+                        "&:hover": { bgcolor: "rgba(0,0,0,0.05)" },
+                      }}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </Box>
@@ -236,57 +261,61 @@ export default function ProductsPage() {
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>{editId ? "Edit Product" : "Add Product"}</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 800, color: "#5a3e2b" }}>
+          {editId ? "Edit Product" : "Add New Product"}
+        </DialogTitle>
 
-        <DialogContent>
+        <DialogContent dividers>
           <TextField
             fullWidth
-            sx={{ mt: 1 }}
-            label="Name"
+            margin="normal"
+            label="Product Name"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
-
           <TextField
             fullWidth
-            sx={{ mt: 1 }}
+            margin="normal"
             label="Price"
             type="number"
             value={form.price}
             onChange={(e) => setForm({ ...form, price: e.target.value })}
           />
-
           <TextField
             fullWidth
-            sx={{ mt: 1 }}
+            margin="normal"
             label="Image URL"
             value={form.image}
             onChange={(e) => setForm({ ...form, image: e.target.value })}
           />
-
           <TextField
             fullWidth
-            sx={{ mt: 1 }}
+            margin="normal"
             label="Category"
             value={form.category}
             onChange={(e) => setForm({ ...form, category: e.target.value })}
           />
-
           <TextField
             fullWidth
-            sx={{ mt: 1 }}
+            margin="normal"
             label="Description"
             multiline
-            minRows={3}
+            rows={3}
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
         </DialogContent>
 
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={save}>
-            Save
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={() => setOpen(false)} color="inherit">
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={save}
+            sx={{ bgcolor: "#6f4e37", "&:hover": { bgcolor: "#5a3e2b" } }}
+          >
+            {editId ? "Update Product" : "Create Product"}
           </Button>
         </DialogActions>
       </Dialog>

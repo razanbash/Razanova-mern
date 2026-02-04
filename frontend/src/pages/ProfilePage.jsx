@@ -7,335 +7,217 @@ import {
   Button,
   Stack,
   Divider,
-  Chip,
+  Avatar,
 } from "@mui/material";
-
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import PersonIcon from "@mui/icons-material/Person";
-import EmailIcon from "@mui/icons-material/Email";
-import SpaIcon from "@mui/icons-material/Spa";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FaceRetouchingNaturalIcon from "@mui/icons-material/FaceRetouchingNatural";
-import StarOutlineIcon from "@mui/icons-material/StarOutline";
+import {
+  AccountCircle,
+  FaceRetouchingNatural,
+  Spa,
+  AutoAwesome,
+  WaterDrop,
+  FavoriteBorder,
+} from "@mui/icons-material";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   useEffect(() => {
-    if (!token) navigate("/login");
-  }, [token, navigate]);
+    if (!localStorage.getItem("token") || !user) navigate("/login");
+  }, [navigate, user]);
 
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  if (!user) return null;
 
   return (
     <Box
       sx={{
-        minHeight: "calc(100vh - 64px)",
+        minHeight: "100vh",
         display: "flex",
-        alignItems: "center",
         justifyContent: "center",
+        alignItems: "center",
         p: 2,
-        background: "linear-gradient(135deg, #e7d2bd, #c9a27c)",
+        position: "relative",
+        overflow: "hidden",
+        background:
+          "radial-gradient(circle at top left, #e7d2bd, #c9a27c, #a57a56)",
       }}
     >
+      {[
+        { I: Spa, t: "5%", l: "5%", s: 100 },
+        { I: AutoAwesome, t: "15%", r: "8%", s: 70 },
+        { I: WaterDrop, b: "10%", l: "10%", s: 90 },
+        { I: FavoriteBorder, b: "12%", r: "12%", s: 80 },
+        { I: Spa, t: "45%", l: "-2%", s: 60 },
+        { I: AutoAwesome, t: "40%", r: "1%", s: 70 },
+      ].map((d, i) => (
+        <d.I
+          key={i}
+          sx={{
+            position: "absolute",
+            top: d.t,
+            left: d.l,
+            right: d.r,
+            bottom: d.b,
+            fontSize: d.s,
+            color: "#dcd0c0",
+            opacity: 0.5,
+          }}
+        />
+      ))}
+
       <Paper
-        elevation={10}
+        elevation={20}
         sx={{
-          width: "min(980px, 95vw)",
-          minHeight: { xs: "auto", md: 420 },
+          width: "min(900px, 95vw)",
           borderRadius: 4,
-          overflow: "hidden",
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "1.1fr 1fr" },
+          gridTemplateColumns: { xs: "1fr", md: "1fr 1.2fr" },
+          overflow: "hidden",
+          zIndex: 2,
         }}
       >
         <Box
           sx={{
-            p: { xs: 3, md: 4 },
+            p: { xs: 3, md: 5 },
             color: "#fff",
-            background: "linear-gradient(135deg, #6f4e37, #a57a56)",
-            position: "relative",
+            background: "linear-gradient(160deg, #5a3e2b, #8a5a44)",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            overflow: "hidden",
           }}
         >
-          <Box
-            sx={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height: 6,
-              background: "linear-gradient(90deg, #f2e6d9, transparent)",
-              opacity: 0.35,
-            }}
-          />
-          <Box
-            sx={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: 6,
-              background: "linear-gradient(90deg, transparent, #f2e6d9)",
-              opacity: 0.35,
-            }}
-          />
-
-          <SpaIcon
-            sx={{
-              position: "absolute",
-              top: 30,
-              left: 20,
-              fontSize: 140,
-              opacity: 0.09,
-              color: "#fff",
-              transform: "rotate(-10deg)",
-              pointerEvents: "none",
-            }}
-          />
-          <AutoAwesomeIcon
-            sx={{
-              position: "absolute",
-              bottom: 30,
-              right: 20,
-              fontSize: 160,
-              opacity: 0.07,
-              color: "#fff",
-              transform: "rotate(12deg)",
-              pointerEvents: "none",
-            }}
-          />
-
-          <Stack spacing={2} sx={{ position: "relative" }}>
+          <Stack spacing={2.5}>
             <Typography
-              sx={{ fontWeight: 900, fontSize: 26, letterSpacing: 1 }}
+              variant="overline"
+              sx={{ letterSpacing: 5, fontWeight: 700, opacity: 0.8 }}
             >
-              RAZANOVA
+              RAZANOVA LUXE
             </Typography>
-
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Typography
-                sx={{ fontSize: 34, fontWeight: 900, lineHeight: 1.1 }}
-              >
-                Your Profile
+            <Box>
+              <Typography variant="h3" fontWeight={900}>
+                Hello,
               </Typography>
-              <FavoriteBorderIcon sx={{ opacity: 0.95 }} />
-            </Stack>
-
-            <Typography sx={{ opacity: 0.9 }}>
-              Your account details — in one place.
+              <Typography variant="h4" fontWeight={300} sx={{ opacity: 0.9 }}>
+                {user.name?.split(" ")[0] || "Guest"}
+              </Typography>
+            </Box>
+            <Typography variant="body2" sx={{ opacity: 0.8 }}>
+              Your journey to radiant skin is documented here.
             </Typography>
-
-            <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }}>
-              <Chip
-                icon={
-                  <FaceRetouchingNaturalIcon
-                    sx={{ color: "#fff !important" }}
-                  />
-                }
-                label="Personalized Routine ✨"
-                sx={{
-                  bgcolor: "rgba(255,255,255,0.22)",
-                  color: "#fff",
-                  fontWeight: 700,
-                  "& .MuiChip-icon": { color: "#fff" },
-                }}
-              />
+            <Stack direction="row" spacing={1} alignItems="center">
+              <FaceRetouchingNatural sx={{ fontSize: 20 }} />
+              <Typography fontWeight={700} variant="body2">
+                Signature Routine
+              </Typography>
             </Stack>
           </Stack>
-
           <Button
             variant="contained"
             onClick={() => navigate("/routine")}
-            startIcon={<AutoAwesomeIcon />}
             sx={{
-              alignSelf: "flex-start",
               bgcolor: "#fff",
-              color: "#6f4e37",
-              fontWeight: 800,
-              borderRadius: 3,
-              "&:hover": { bgcolor: "#f6f2ef" },
+              color: "#5a3e2b",
+              fontWeight: 900,
+              borderRadius: 50,
+              mt: 5,
+              py: 1.2,
+              "&:hover": { bgcolor: "#f3eadf" },
             }}
           >
-            Go to Routine →
+            Daily Regimen →
           </Button>
         </Box>
 
-        <Box
-          sx={{
-            p: { xs: 3, md: 4 },
-            bgcolor: "rgba(255,255,255,0.65)",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          <AccountCircleIcon
-            sx={{
-              position: "absolute",
-              top: 18,
-              right: 12,
-              fontSize: 170,
-              opacity: 0.06,
-              color: "#6f4e37",
-              pointerEvents: "none",
-            }}
-          />
-
-          <SpaIcon
-            sx={{
-              position: "absolute",
-              top: 10,
-              left: 10,
-              fontSize: 60,
-              opacity: 0.08,
-              color: "#6f4e37",
-              pointerEvents: "none",
-            }}
-          />
-
-          <StarOutlineIcon
-            sx={{
-              position: "absolute",
-              top: 120,
-              right: 5,
-              fontSize: 55,
-              opacity: 0.07,
-              color: "#6f4e37",
-              pointerEvents: "none",
-            }}
-          />
-
-          <FavoriteBorderIcon
-            sx={{
-              position: "absolute",
-              bottom: 20,
-              left: 30,
-              fontSize: 65,
-              opacity: 0.07,
-              color: "#6f4e37",
-              pointerEvents: "none",
-            }}
-          />
-
-          <AutoAwesomeIcon
-            sx={{
-              position: "absolute",
-              bottom: 80,
-              right: 20,
-              fontSize: 60,
-              opacity: 0.07,
-              color: "#6f4e37",
-              pointerEvents: "none",
-            }}
-          />
-
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-            <AccountCircleIcon sx={{ color: "#6f4e37" }} />
-            <Typography variant="h4" sx={{ fontWeight: 900 }}>
-              Profile
-            </Typography>
+        <Box sx={{ p: { xs: 3, md: 5 }, bgcolor: "#fff" }}>
+          <Stack direction="row" spacing={2} alignItems="center" mb={3}>
+            <Avatar sx={{ bgcolor: "#8a5a44", width: 50, height: 50 }}>
+              <AccountCircle sx={{ fontSize: 36 }} />
+            </Avatar>
+            <Box>
+              <Typography variant="h5" fontWeight={900} color="#3d2b1f">
+                Profile Details
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Secure Member Information
+              </Typography>
+            </Box>
           </Stack>
-
-          <Typography sx={{ opacity: 0.75, mb: 3 }}>
-            Manage your information and assessment result.
-          </Typography>
 
           <Paper
             elevation={0}
             sx={{
               p: 3,
-              borderRadius: 3,
-              bgcolor: "rgba(255,255,255,0.85)",
-              border: "1px solid rgba(0,0,0,0.06)",
-              position: "relative",
+              borderRadius: 4,
+              border: "1px solid #e0dcd9",
+              bgcolor: "rgba(255,255,255,0.5)",
             }}
           >
-            <Stack spacing={1.2}>
-              <Stack direction="row" spacing={1} alignItems="center">
-                <PersonIcon sx={{ color: "#6f4e37" }} />
-                <Typography sx={{ fontWeight: 800 }}>Account Info</Typography>
-              </Stack>
-
-              <Divider />
-
+            <Stack spacing={2}>
+              {[
+                { l: "Full Name", v: user.name },
+                { l: "Email", v: user.email },
+              ].map((item, i) => (
+                <React.Fragment key={i}>
+                  <Box>
+                    <Typography
+                      variant="overline"
+                      color="text.secondary"
+                      fontWeight={800}
+                    >
+                      {item.l}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      fontWeight={600}
+                      color="#5a3e2b"
+                    >
+                      {item.v || "Not Set"}
+                    </Typography>
+                  </Box>
+                  {i === 0 && <Divider sx={{ opacity: 0.6 }} />}
+                </React.Fragment>
+              ))}
               <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{ gap: 2 }}
+                direction={{ xs: "column", sm: "row" }}
+                spacing={2}
+                pt={1.5}
               >
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <PersonIcon sx={{ color: "#8a5a44", fontSize: 20 }} />
-                  <Typography sx={{ opacity: 0.75 }}>Name</Typography>
-                </Stack>
-                <Typography sx={{ fontWeight: 700 }}>
-                  {user?.name || "—"}
-                </Typography>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  onClick={() => navigate("/assessment")}
+                  sx={{ bgcolor: "#8a5a44", fontWeight: 800, borderRadius: 2 }}
+                >
+                  New Assessment
+                </Button>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  onClick={() => navigate("/dashboard")}
+                  sx={{
+                    color: "#8a5a44",
+                    borderColor: "#8a5a44",
+                    fontWeight: 800,
+                    borderRadius: 2,
+                  }}
+                >
+                  Dashboard
+                </Button>
               </Stack>
-
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{ gap: 2 }}
-              >
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <EmailIcon sx={{ color: "#8a5a44", fontSize: 20 }} />
-                  <Typography sx={{ opacity: 0.75 }}>Email</Typography>
-                </Stack>
-                <Typography sx={{ fontWeight: 700 }}>
-                  {user?.email || "—"}
-                </Typography>
-              </Stack>
-            </Stack>
-
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              spacing={1.5}
-              sx={{ mt: 3 }}
-            >
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={() => navigate("/assessment")}
-                startIcon={<SpaIcon />}
-                sx={{
-                  fontWeight: 800,
-                  bgcolor: "#8a5a44",
-                  color: "#fff",
-                  "&:hover": { bgcolor: "#734735" },
-                }}
-              >
-                Retake Assessment
-              </Button>
-
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() => navigate("/dashboard")}
-                startIcon={<AutoAwesomeIcon />}
-                sx={{
-                  fontWeight: 800,
-                  borderColor: "#8a5a44",
-                  color: "#8a5a44",
-                  "&:hover": {
-                    borderColor: "#734735",
-                    backgroundColor: "rgba(138, 90, 68, 0.08)",
-                  },
-                }}
-              >
-                Back to Dashboard
-              </Button>
             </Stack>
           </Paper>
-
-          <Typography sx={{ mt: 2, fontSize: 13, opacity: 0.7 }}>
-            Tip: Retake the assessment anytime to update your recommendations
+          <Typography
+            variant="caption"
+            sx={{
+              display: "block",
+              mt: 3,
+              textAlign: "center",
+              color: "#a57a56",
+              fontStyle: "italic",
+              opacity: 0.8,
+            }}
+          >
+            “Confidence is the best skincare.”
           </Typography>
         </Box>
       </Paper>
