@@ -35,7 +35,9 @@ export const register = async (req, res) => {
       token: generateToken(newUser._id, newUser.role),
     });
   } catch (error) {
-    return res.status(500).json({ message: "Server error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 };
 
@@ -47,7 +49,7 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Please fill all fields" });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
@@ -68,6 +70,8 @@ export const login = async (req, res) => {
       token: generateToken(user._id, user.role),
     });
   } catch (error) {
-    return res.status(500).json({ message: "Server error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 };

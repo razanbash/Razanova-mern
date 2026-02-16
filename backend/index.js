@@ -7,6 +7,8 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import assessmentRoutes from "./routes/assessment.routes.js";
+import userRoutes from "./routes/user.routes.js"; // To Be Continued Final Project
+import categoryRoutes from "./routes/category.routes.js"; // To Be Continued Final Project
 
 dotenv.config();
 
@@ -25,6 +27,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/assessment", assessmentRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes); // To Be Continued Final Project
+app.use("/api/categories", categoryRoutes); // To Be Continued Final Project
 
 const PORT = process.env.PORT || 5000;
 

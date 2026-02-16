@@ -1,6 +1,5 @@
 import Product from "../models/product.model.js";
 
-
 export const createProduct = async (req, res) => {
   try {
     const product = await Product.create(req.body);
@@ -9,7 +8,6 @@ export const createProduct = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
-
 
 export const getProducts = async (req, res) => {
   try {
@@ -20,12 +18,11 @@ export const getProducts = async (req, res) => {
   }
 };
 
-
 export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
 
-    if (!product) return res.status(404).json({ message: "Not found" }); 
+    if (!product) return res.status(404).json({ message: "Not found" });
 
     res.json(product);
   } catch (err) {
@@ -33,12 +30,11 @@ export const getProductById = async (req, res) => {
   }
 };
 
-
 export const updateProduct = async (req, res) => {
   try {
     const updated = await Product.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-      runValidators: true, 
+      runValidators: true,
     });
 
     res.json(updated);

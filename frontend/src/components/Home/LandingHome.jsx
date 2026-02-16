@@ -12,14 +12,14 @@ export default function LandingHome() {
     <Box
       sx={{
         minHeight: "100vh",
-        width: "100vw",
+        width: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         position: "relative",
         overflow: "hidden",
         background: "linear-gradient(135deg, #e7d2bd, #c9a27c)",
-        p: 3,
+        p: { xs: 2, sm: 3, md: 5 },
       }}
     >
       <Box

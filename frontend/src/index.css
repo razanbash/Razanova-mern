@@ -1,26 +1,25 @@
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
 }
 
-html,body{
+html,
+body {
   margin: 0;
   padding: 0;
-  
 }
 
-::-webkit-scrollbar{
-display: none;
+::-webkit-scrollbar {
+  display: none;
 }
-
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

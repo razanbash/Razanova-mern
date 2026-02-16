@@ -1,6 +1,22 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Paper, Typography, Button, Stack, Chip } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Grid,
+  Stack,
+  IconButton,
+  Container,
+} from "@mui/material";
+
+import {
+  Inventory2Outlined,
+  TuneOutlined,
+  ArticleOutlined,
+  LogoutOutlined,
+  AdminPanelSettingsOutlined,
+  ArrowForward,
+} from "@mui/icons-material";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -8,16 +24,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user") || "null");
-
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    if (!user || user.role !== "admin") {
-      navigate("/dashboard");
-      return;
-    }
+    if (!token || user?.role !== "admin") navigate("/login");
   }, [navigate]);
 
   const user = JSON.parse(localStorage.getItem("user") || "null");
@@ -25,152 +32,235 @@ export default function AdminDashboard() {
   return (
     <Box
       sx={{
-        minHeight: "calc(100vh - 64px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        p: 2,
-        background: "linear-gradient(135deg, #e7d2bd, #c9a27c)",
+        minHeight: "100vh",
+        background:
+          "linear-gradient(135deg,#f5eee6 0%, #e8d8c3 50%, #d6c2ad 100%)",
       }}
     >
-      <Paper
-        elevation={10}
+      <Container
+        maxWidth="lg"
         sx={{
-          width: "min(980px, 95vw)",
-          borderRadius: 4,
-          overflow: "hidden",
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "1.1fr 1fr" },
+          pt: { xs: 6, md: 12 },
+          pb: 10,
         }}
       >
-        <Box
-          sx={{
-            p: { xs: 3, md: 4 },
-            color: "#fff",
-            background: "linear-gradient(135deg, #7a553c, #a57a56)",
-            position: "relative",
-          }}
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-end"
+          sx={{ mb: 10 }}
         >
-          <Box
-            sx={{
-              position: "absolute",
-              top: -60,
-              left: -60,
-              width: 160,
-              height: 160,
-              borderRadius: "50%",
-              bgcolor: "rgba(255,255,255,0.12)",
-            }}
-          />
-          <Box
-            sx={{
-              position: "absolute",
-              bottom: -70,
-              right: -70,
-              width: 220,
-              height: 220,
-              borderRadius: "50%",
-              bgcolor: "rgba(255,255,255,0.10)",
-            }}
-          />
-
-          <Typography sx={{ fontWeight: 900, fontSize: 26, letterSpacing: 1 }}>
-            RAZANOVA
-          </Typography>
-
-          <Typography
-            sx={{ mt: 2, fontSize: 34, fontWeight: 900, lineHeight: 1.1 }}
-          >
-            Admin Dashboard 🛠️
-          </Typography>
-
-          <Typography sx={{ mt: 1, opacity: 0.9 }}>
-            Manage products, users, and system content.
-          </Typography>
-
-          <Stack direction="row" spacing={1} sx={{ mt: 2, flexWrap: "wrap" }}>
-            <Chip
-              label={`Role: ${user?.role || "admin"}`}
-              sx={{
-                bgcolor: "rgba(255,255,255,0.18)",
-                color: "#fff",
-                fontWeight: 700,
-              }}
-            />
-            <Chip
-              label="Control Panel "
-              sx={{
-                bgcolor: "rgba(255,255,255,0.18)",
-                color: "#fff",
-                fontWeight: 700,
-              }}
-            />
-          </Stack>
-        </Box>
-
-        <Box sx={{ p: { xs: 3, md: 4 }, bgcolor: "rgba(255,255,255,0.65)" }}>
-          <Typography variant="h4" sx={{ fontWeight: 900, mb: 1 }}>
-            Quick Actions
-          </Typography>
-          <Typography sx={{ opacity: 0.75, mb: 3 }}>
-            Choose what you want to manage.
-          </Typography>
-
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              borderRadius: 3,
-              bgcolor: "rgba(255,255,255,0.85)",
-              border: "1px solid rgba(0,0,0,0.06)",
-            }}
-          >
-            <Stack spacing={1.5}>
-              <Button
-                variant="contained"
-                onClick={() => navigate("/products")}
+          <Box>
+            <Stack direction="row" spacing={1.5} alignItems="center" mb={1.5}>
+              <AdminPanelSettingsOutlined
+                sx={{ color: "#6F4E37", fontSize: 24 }}
+              />
+              <Typography
+                variant="caption"
                 sx={{
-                  fontWeight: 800,
-                  borderRadius: 3,
-                  bgcolor: "#6f4e37",
-                  "&:hover": { bgcolor: "#5a3e2b" },
+                  fontWeight: 900,
+                  letterSpacing: 4,
+                  color: "#6F4E37",
                 }}
               >
-                Manage Products
-              </Button>
+                ADMIN PANEL
+              </Typography>
+            </Stack>
 
-              <Button
-                variant="outlined"
-                onClick={() => navigate("/dashboard")}
+            <Typography
+              variant="h2"
+              fontWeight={900}
+              sx={{
+                background: "linear-gradient(90deg,#4b2e2e,#6F4E37,#8b5e3c)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                letterSpacing: -2,
+                lineHeight: 1,
+              }}
+            >
+              Dashboard
+            </Typography>
+          </Box>
+
+          <Stack direction="row" spacing={3} alignItems="center">
+            <Box
+              sx={{ textAlign: "right", display: { xs: "none", sm: "block" } }}
+            >
+              <Typography
+                variant="body2"
+                sx={{ fontWeight: 800, color: "#4b2e2e" }}
+              >
+                {user?.name?.toUpperCase() || "ROOT_ADMIN"}
+              </Typography>
+              <Typography
+                variant="caption"
+                sx={{ color: "#8b5e3c", fontWeight: 700 }}
+              >
+                AUTHENTICATED
+              </Typography>
+            </Box>
+
+            <IconButton
+              onClick={() => {
+                localStorage.clear();
+                navigate("/login");
+              }}
+              sx={{
+                background: "linear-gradient(135deg,#6F4E37,#4b2e2e)",
+                color: "#fff",
+                p: 1.5,
+                "&:hover": {
+                  transform: "scale(1.1)",
+                },
+              }}
+            >
+              <LogoutOutlined fontSize="small" />
+            </IconButton>
+          </Stack>
+        </Stack>
+
+        <Grid container spacing={4} justifyContent="center">
+          {[
+            {
+              num: "01",
+              title: "Products",
+              desc: "Manage all products, pricing, stock levels, and visibility across the store.",
+              icon: <Inventory2Outlined fontSize="large" />,
+              path: "/products",
+            },
+            {
+              num: "02",
+              title: "Content Manager",
+              desc: "Control homepage sections, text content, banners, and brand storytelling.",
+              icon: <ArticleOutlined fontSize="large" />,
+              path: "/admin/content",
+            },
+            {
+              num: "03",
+              title: "Settings",
+              desc: "Update admin credentials, system preferences, and security configurations.",
+              icon: <TuneOutlined fontSize="large" />,
+              path: "/admin/settings",
+            },
+          ].map((item) => (
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              key={item.num}
+              sx={{ display: "flex" }}
+            >
+              <Box
+                onClick={() => navigate(item.path)}
                 sx={{
-                  fontWeight: 800,
-                  borderRadius: 3,
-                  borderColor: "#6f4e37",
-                  color: "#6f4e37",
+                  cursor: "pointer",
+                  width: "100%",
+                  p: 4,
+                  borderRadius: "22px",
+                  background: "linear-gradient(145deg,#6F4E37,#8b5e3c)",
+                  color: "#fff",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  transition: "0.4s",
+                  boxShadow: "0 15px 35px rgba(75,46,46,0.25)",
                   "&:hover": {
-                    borderColor: "#5a3e2b",
-                    backgroundColor: "rgba(111,78,55,0.08)",
+                    transform: "translateY(-10px)",
+                    boxShadow: "0 25px 50px rgba(75,46,46,0.35)",
                   },
                 }}
               >
-                Go to User Dashboard
-              </Button>
+                <Box>
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb={4}
+                  >
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        fontWeight: 900,
+                        letterSpacing: 3,
+                        opacity: 0.9,
+                      }}
+                    >
+                      {item.num}
+                    </Typography>
+                    {item.icon}
+                  </Stack>
 
-              <Button
-                variant="text"
-                onClick={() => navigate("/profile")}
-                sx={{ fontWeight: 800, borderRadius: 3, color: "#6f4e37" }}
-              >
-                View My Profile
-              </Button>
-            </Stack>
-          </Paper>
+                  <Typography variant="h5" fontWeight={900} sx={{ mb: 2 }}>
+                    {item.title}
+                  </Typography>
 
-          <Typography sx={{ mt: 2, fontSize: 13, opacity: 0.7 }}>
-            Tip: Keep admin actions simple for the project requirements
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      opacity: 0.9,
+                      lineHeight: 1.7,
+                    }}
+                  >
+                    {item.desc}
+                  </Typography>
+                </Box>
+
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  spacing={1}
+                  sx={{ mt: 6 }}
+                >
+                  <Typography
+                    variant="button"
+                    sx={{
+                      fontWeight: 900,
+                      fontSize: "0.75rem",
+                      letterSpacing: 1,
+                    }}
+                  >
+                    OPEN MODULE
+                  </Typography>
+                  <ArrowForward sx={{ fontSize: 18 }} />
+                </Stack>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          sx={{
+            mt: 15,
+            pt: 4,
+            borderTop: "1px solid rgba(75,46,46,0.2)",
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{
+              fontWeight: 800,
+              color: "#4b2e2e",
+              letterSpacing: 2,
+            }}
+          >
+            RAZANOVA © 2026
           </Typography>
-        </Box>
-      </Paper>
+
+          <Typography
+            variant="caption"
+            sx={{
+              fontWeight: 800,
+              color: "#6F4E37",
+              letterSpacing: 2,
+            }}
+          >
+            SYSTEM VERSION: 2.0.4
+          </Typography>
+        </Stack>
+      </Container>
     </Box>
   );
 }
